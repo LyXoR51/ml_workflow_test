@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the repository
-                git branch: 'main', url: 'https://github.com/LyXoR51/ml_workflow_test.git'
+                git branch: 'main', url: 'https://https://github.com/LyXoR51/ml_workflow_test'
             }
         }
 
@@ -21,7 +21,7 @@ pipeline {
         stage('Run Tests Inside Docker Container') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'MLFLOW_TRACKING_URI', variable: 'MLFLOW_TRACKING_URI'),
+                    string(credentialsId: 'mlflow-tracking-uri', variable: 'MLFLOW_TRACKING_URI'),
                     string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY'),
                     string(credentialsId: 'backend-store-uri', variable: 'BACKEND_STORE_URI'),
