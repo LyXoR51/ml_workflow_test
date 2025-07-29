@@ -1,0 +1,10 @@
+artifact_location: file:///home/lyxor/storage_w_l/JEDHA/my_certification_projects/my_certification_projects_lead/M04-Projet-Final/CICD/app/mlruns/202924978336071865/models/m-b682a1e2afbb4efc843d2784a0518f02/artifacts
+creation_timestamp: 1753817055945
+experiment_id: '202924978336071865'
+last_updated_timestamp: 1753817057550
+model_id: m-b682a1e2afbb4efc843d2784a0518f02
+model_type: null
+name: model
+source_run_id: 985932a5054949a3b0b475d98fb5ad48
+status: 2
+status_message: null

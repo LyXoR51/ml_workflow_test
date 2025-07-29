@@ -1,0 +1,14 @@
+digest: e3f41e2e
+name: dataset
+profile: '{"num_rows": 400, "num_elements": 4000}'
+schema: '{"mlflow_colspec": [{"type": "double", "name": "square_feet", "required":
+  true}, {"type": "long", "name": "num_bedrooms", "required": true}, {"type": "long",
+  "name": "num_bathrooms", "required": true}, {"type": "long", "name": "num_floors",
+  "required": true}, {"type": "long", "name": "year_built", "required": true}, {"type":
+  "long", "name": "has_garden", "required": true}, {"type": "long", "name": "has_pool",
+  "required": true}, {"type": "long", "name": "garage_size", "required": true}, {"type":
+  "double", "name": "location_score", "required": true}, {"type": "double", "name":
+  "distance_to_center", "required": true}]}'
+source: '{"tags": {"mlflow.user": "lyxor", "mlflow.source.name": "train.py", "mlflow.source.type":
+  "LOCAL"}}'
+source_type: code

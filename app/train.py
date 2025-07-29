@@ -1,0 +1,107 @@
+import pandas as pd
+import numpy as np
+import mlflow
+import time
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.linear_model import LinearRegression 
+from sklearn.pipeline import Pipeline
+
+# Load data
+def load_data(url):
+
+    return pd.read_csv(url,index_col=0)
+
+# Preprocess data
+def preprocess_data(df):
+    df.columns = df.columns.str.lower()
+    target_variable = "price"
+    my_features_list = ['square_feet', 'num_bedrooms', 'num_bathrooms', 'num_floors',
+            'year_built', 'has_garden', 'has_pool', 'garage_size',
+            'location_score', 'distance_to_center']
+
+    X = df[my_features_list]
+    y = df[target_variable]
+
+    return train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create the pipeline
+def create_pipeline():
+
+    my_features_list = ['square_feet', 'num_bedrooms', 'num_bathrooms', 'num_floors',
+        'year_built', 'has_garden', 'has_pool', 'garage_size',
+        'location_score', 'distance_to_center']
+    categorical_features = []
+    numeric_features = [feature for feature in my_features_list if feature not in categorical_features]
+
+    numerical_transformer = Pipeline(steps=[
+        ('scaler', StandardScaler())
+    ])
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numerical_transformer, numeric_features)
+            ])
+
+    return Pipeline(steps=[
+        ("Preprocessing", preprocessor),
+        ("Regressor",LinearRegression())
+    ], verbose=True)
+
+# Train model
+def train_model(pipe, X_train, y_train):
+
+    pipe.fit(X_train, y_train)
+    return pipe
+
+# Log metrics and model to MLflow
+def log_metrics_and_model(model, X_train, y_train, X_test, y_test, artifact_path, registered_model_name):
+
+    mlflow.log_metric("Train Score", model.score(X_train, y_train))
+    mlflow.log_metric("Test Score", model.score(X_test, y_test))
+    mlflow.sklearn.log_model(
+        sk_model=model,
+        artifact_path=artifact_path,
+        registered_model_name=registered_model_name
+    )
+
+# Main function to execute the workflow
+def run_experiment(experiment_name, data_url, artifact_path, registered_model_name):
+
+    # Start timing
+    start_time = time.time()
+
+    # Load and preprocess data
+    df = load_data(data_url)
+    X_train, X_test, y_train, y_test = preprocess_data(df)
+
+    # Create pipeline
+    pipe = create_pipeline()
+
+    # Set experiment's info 
+    mlflow.set_experiment(experiment_name)
+
+    # Get our experiment info
+    experiment = mlflow.get_experiment_by_name(experiment_name)
+
+    # Call mlflow autolog
+    mlflow.sklearn.autolog()
+
+    with mlflow.start_run(experiment_id=experiment.experiment_id):
+        # Train model
+        train_model(pipe, X_train, y_train)
+
+    # Print timing
+    print(f"...Training Done! --- Total training time: {time.time() - start_time} seconds")
+
+# Entry point for the script
+if __name__ == "__main__":
+    # Define experiment parameters
+    experiment_name = "test"
+    data_url = "https://fp-private-bucket.s3.eu-west-3.amazonaws.com/housing_prices/real_estate_dataset.csv"
+    artifact_path = "modeling_housing_market"
+    registered_model_name = "linear_regression"
+
+    # Run the experiment
+    run_experiment(experiment_name, data_url, artifact_path, registered_model_name)
