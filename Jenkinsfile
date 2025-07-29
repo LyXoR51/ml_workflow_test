@@ -21,11 +21,11 @@ pipeline {
         stage('Run Tests Inside Docker Container') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'mlflow-tracking-uri', variable: 'MLFLOW_TRACKING_URI'),
-                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY'),
-                    string(credentialsId: 'backend-store-uri', variable: 'BACKEND_STORE_URI'),
-                    string(credentialsId: 'artifact-root', variable: 'ARTIFACT_ROOT')
+                    string(credentialsId: 'MLFLOW_TRACKING_URI', variable: 'MLFLOW_TRACKING_URI'),
+                    string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY'),
+                    string(credentialsId: 'BACKEND_STORE_URI', variable: 'BACKEND_STORE_URI'),
+                    string(credentialsId: 'ARTIFACT_ROOT', variable: 'ARTIFACT_ROOT')
                 ]) {
                     // Write environment variables to a temporary file
                     // KEEP SINGLE QUOTE FOR SECURITY PURPOSES (MORE INFO HERE: https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#handling-credentials)
