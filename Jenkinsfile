@@ -11,7 +11,7 @@ pipeline {
         AWS_DEFAULT_REGION = 'eu-west-3'                           // adapte ta région
         S3_BUCKET = credentials('S3_BUCKET')
         S3_FOLDER = credentials('S3_FOLDER')
-        FILENAME = params.FILENAME                         // avec slash à la fin si besoin
+        FILENAME = ${params.FILENAME}                         // avec slash à la fin si besoin
     }
 
     stages {
@@ -22,43 +22,36 @@ pipeline {
             }
         }
 
-                stage('Download CSV from S3') {
+        stage('Download CSV from S3') {
             steps {
-                script {
-                    def filename = params.FILENAME
-                    if (!filename) {
-                        error "Le paramètre FILENAME est obligatoire."
-                    }
+                sh '''
+                python3 -c "
+                import os
+                import boto3
+                import botocore
 
-                    // Ne pas mettre les secrets directement dans la ligne shell
-                    sh """
-                    python3 -c \"
-                    import os
-                    import boto3
-                    import botocore
+                aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
+                aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
+                region_name = os.environ['AWS_DEFAULT_REGION']
+                bucket = os.environ['S3_BUCKET']
+                folder = os.environ['S3_FOLDER']
+                filename = os.environ['FILENAME']
 
-                    aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
-                    aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
-                    region_name = os.environ['AWS_DEFAULT_REGION']
-                    bucket = os.environ['S3_BUCKET']
-                    folder = os.environ['S3_FOLDER']
-                    filename = '${filename}'
+                s3 = boto3.client('s3',
+                    aws_access_key_id=aws_access_key_id,
+                    aws_secret_access_key=aws_secret_access_key,
+                    region_name=region_name)
 
-                    s3 = boto3.client('s3',
-                        aws_access_key_id=aws_access_key_id,
-                        aws_secret_access_key=aws_secret_access_key,
-                        region_name=region_name)
+                key = folder + filename
 
-                    filename = os.environ['FILENAME']
-                    key = folder + filename
-
-                    try:
-                        s3.download_file(bucket, key, filename)
-                        print(f'Fichier téléchargé : {filename}')
-                    except botocore.exceptions.ClientError as e:
-                        print(f'Erreur lors du téléchargement : {e}')
-                        exit(1)
-                    \""""
+                try:
+                    s3.download_file(bucket, key, filename)
+                    print(f'Fichier téléchargé : {filename}')
+                except botocore.exceptions.ClientError as e:
+                    print(f'Erreur lors du téléchargement : {e}')
+                    exit(1)
+                "
+                '''
                 }
             }
         }
