@@ -1,7 +1,7 @@
 name: ml_workflow_test
 
 docker_env:
-  image: ml-pipeline-image
+  image: lyxor/mlflowflo
   build_context: .
 
 entry_points:
