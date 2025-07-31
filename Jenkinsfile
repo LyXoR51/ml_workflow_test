@@ -29,19 +29,26 @@ pipeline {
                         error "Le paramètre FILENAME est obligatoire."
                     }
 
-                    // Exécution d'un script Python inline pour récupérer le fichier
+                    // Ne pas mettre les secrets directement dans la ligne shell
                     sh """
                     python3 -c \"
+                    import os
                     import boto3
                     import botocore
 
-                    s3 = boto3.client('s3',
-                        aws_access_key_id=$AWS_ACCESS_KEY_ID,
-                        aws_secret_access_key=$AWS_SECRET_ACCESS_KEY,
-                        region_name=$AWS_DEFAULT_REGION)
+                    aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
+                    aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
+                    region_name = os.environ['AWS_DEFAULT_REGION']
+                    bucket = os.environ['S3_BUCKET']
+                    folder = os.environ['S3_FOLDER']
+                    filename = '${filename}'
 
-                    bucket = $S3_BUCKET
-                    key = $S3_FOLDER + $filename
+                    s3 = boto3.client('s3',
+                        aws_access_key_id=aws_access_key_id,
+                        aws_secret_access_key=aws_secret_access_key,
+                        region_name=region_name)
+
+                    key = folder + filename
 
                     try:
                         s3.download_file(bucket, key, filename)
