@@ -10,7 +10,8 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_DEFAULT_REGION = 'eu-west-3'                           // adapte ta région
         S3_BUCKET = credentials('S3_BUCKET')
-        S3_FOLDER = credentials('S3_FOLDER')
+        S3_FOLDER = 'housing_prices/train_dataset/'
+
     }
 
     stages {
