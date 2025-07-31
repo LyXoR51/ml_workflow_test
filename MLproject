@@ -1,6 +1,6 @@
-name: californian_housing_market
+name: Housing_prices_ml_workflow
 docker_env:
-  image: jedha/sample-mlflow-server
+  image: ml-pipeline-image
   environment: [
     "MLFLOW_TRACKING_URI",
     "MLFLOW_EXPERIMENT_ID",

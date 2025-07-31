@@ -1,1 +1,0 @@
-[('num', Pipeline(steps=[('scaler', StandardScaler())]), ['square_feet', 'num_bedrooms', 'num_bathrooms', 'num_floors', 'year_built', 'has_garden', 'has_pool', 'garage_size', 'location_score', 'distance_to_center'])]

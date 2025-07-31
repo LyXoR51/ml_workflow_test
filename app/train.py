@@ -99,7 +99,7 @@ def run_experiment(experiment_name, data_url, artifact_path, registered_model_na
 if __name__ == "__main__":
     # Define experiment parameters
     experiment_name = "test"
-    data_url = "https://fp-private-bucket.s3.eu-west-3.amazonaws.com/housing_prices/real_estate_dataset.csv"
+    data_url = "https://fp-private-bucket.s3.eu-west-3.amazonaws.com/housing_prices/train_dataset/real_estate_dataset.csv"
     artifact_path = "modeling_housing_market"
     registered_model_name = "linear_regression"
 
