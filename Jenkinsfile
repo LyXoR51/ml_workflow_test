@@ -11,7 +11,7 @@ pipeline {
         AWS_DEFAULT_REGION = 'eu-west-3'                           // adapte ta région
         S3_BUCKET = credentials('S3_BUCKET')
         S3_FOLDER = credentials('S3_FOLDER')
-        FILENAME = ${params.FILENAME}                         // avec slash à la fin si besoin
+        FILENAME = $params.FILENAME                     // avec slash à la fin si besoin
     }
 
     stages {
@@ -54,7 +54,6 @@ pipeline {
                 '''
                 }
             }
-        }
 
         stage('Build Docker Image') {
             steps {
