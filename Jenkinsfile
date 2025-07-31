@@ -36,12 +36,12 @@ pipeline {
                     import botocore
 
                     s3 = boto3.client('s3',
-                        aws_access_key_id='${AWS_ACCESS_KEY_ID}',
-                        aws_secret_access_key='${AWS_SECRET_ACCESS_KEY}',
-                        region_name='${AWS_DEFAULT_REGION}')
+                        aws_access_key_id=$AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=$AWS_SECRET_ACCESS_KEY,
+                        region_name=$AWS_DEFAULT_REGION)
 
-                    bucket = '${S3_BUCKET}'
-                    key = '${S3_FOLDER}' + '${filename}'
+                    bucket = $S3_BUCKET
+                    key = $S3_FOLDER + $filename
 
                     try:
                         s3.download_file(bucket, key, filename)
