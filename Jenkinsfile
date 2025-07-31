@@ -1,11 +1,56 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'FILENAME', defaultValue: '', description: 'Nom du fichier CSV à télécharger')
+    }
+
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')       // Jenkins credentials ID
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_DEFAULT_REGION = 'eu-west-3'                           // adapte ta région
+        S3_BUCKET = credentials('S3_BUCKET')
+        S3_FOLDER = credentials('S3_FOLDER')                         // avec slash à la fin si besoin
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 // Checkout the code from the repository
                 git branch: 'main', url: 'https://github.com/LyXoR51/ml_workflow_test.git'
+            }
+        }
+
+                stage('Download CSV from S3') {
+            steps {
+                script {
+                    def filename = params.FILENAME
+                    if (!filename) {
+                        error "Le paramètre FILENAME est obligatoire."
+                    }
+
+                    // Exécution d'un script Python inline pour récupérer le fichier
+                    sh """
+                    python3 -c \"
+                    import boto3
+                    import botocore
+
+                    s3 = boto3.client('s3',
+                        aws_access_key_id='${AWS_ACCESS_KEY_ID}',
+                        aws_secret_access_key='${AWS_SECRET_ACCESS_KEY}',
+                        region_name='${AWS_DEFAULT_REGION}')
+
+                    bucket = '${S3_BUCKET}'
+                    key = '${S3_FOLDER}' + '${filename}'
+
+                    try:
+                        s3.download_file(bucket, key, filename)
+                        print(f'Fichier téléchargé : {filename}')
+                    except botocore.exceptions.ClientError as e:
+                        print(f'Erreur lors du téléchargement : {e}')
+                        exit(1)
+                    \""""
+                }
             }
         }
 
