@@ -10,7 +10,8 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_DEFAULT_REGION = 'eu-west-3'                           // adapte ta région
         S3_BUCKET = credentials('S3_BUCKET')
-        S3_FOLDER = credentials('S3_FOLDER')                         // avec slash à la fin si besoin
+        S3_FOLDER = credentials('S3_FOLDER')
+        FILENAME = params.FILENAME                         // avec slash à la fin si besoin
     }
 
     stages {
@@ -48,6 +49,7 @@ pipeline {
                         aws_secret_access_key=aws_secret_access_key,
                         region_name=region_name)
 
+                    filename = os.environ['FILENAME']
                     key = folder + filename
 
                     try:
