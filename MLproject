@@ -1,12 +1,15 @@
-name: Housing_prices_ml_workflow
+name: ml_workflow_test
+
 docker_env:
+  image: ml-pipeline-image
   build_context: .
-  environment: [
-    "MLFLOW_TRACKING_URI",
-    "MLFLOW_EXPERIMENT_ID",
-    "AWS_ACCESS_KEY_ID",
-    "AWS_SECRET_ACCESS_KEY"
-  ]
+
 entry_points:
   main:
+    parameters: []
     command: "python app/train.py"
+    environment:
+      - MLFLOW_TRACKING_URI
+      - MLFLOW_EXPERIMENT_ID
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
