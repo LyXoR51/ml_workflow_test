@@ -157,6 +157,7 @@ import os
 import boto3
 from io import BytesIO
 from botocore.exceptions import ClientError
+import argparse
 
 
 def load_data(file_key: str):
@@ -251,11 +252,15 @@ def run_experiment(experiment_name, file_key, artifact_path, registered_model_na
 
 
 if __name__ == "__main__":
-    file_key = os.environ.get("FILE_KEY")
-    if not file_key or "PAR DEFAUT" in file_key:
-        raise ValueError("❌ La variable d'environnement FILE_KEY est vide ou invalide !")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file_key", type=str, required=True, help="S3 key for the training dataset")
+    args = parser.parse_args()
 
-    print(f"✅ FILE_KEY is: {file_key}")
+    file_key = args.file_key
+    if not file_key or file_key == "🏁 PAR DEFAUT":
+        raise ValueError("❌ Le paramètre --file_key est vide ou invalide !")
+
+    print(f"✅ FILE_KEY (via argparse) is: {file_key}")
 
     experiment_name = "test"
     artifact_path = "modeling_housing_market"
