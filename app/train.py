@@ -13,16 +13,14 @@ from io import BytesIO
 from botocore.exceptions import ClientError
 
 
-filename = os.environ.get('FILENAME')
+file_key = os.environ.get('FILE_KEY')
 
 #filename = 'train_dataset_20250730_205612.csv'
 # Load data
-def load_data(filename):
+def load_data(file_key):
     bucket = 'fp-private-bucket'
-    folder = 'housing_prices/train_dataset'
-    key = f"{folder}/{filename}"  
 
-    print(f"🔍 Tentative de lecture de S3://{bucket}/{key}")
+    print(f"🔍 Tentative de lecture de S3://{bucket}/{file_key}")
 
     s3 = boto3.client(
         's3',
@@ -32,7 +30,7 @@ def load_data(filename):
     )
 
     try:
-        response = s3.get_object(Bucket=bucket, Key=key)
+        response = s3.get_object(Bucket=bucket, Key=file_key)
         df = pd.read_csv(BytesIO(response['Body'].read()))
         print(f"✅ Données chargées depuis S3, shape = {df.shape}")
         return df
@@ -97,13 +95,13 @@ def log_metrics_and_model(model, X_train, y_train, X_test, y_test, artifact_path
     )
 
 # Main function to execute the workflow
-def run_experiment(experiment_name, filename, artifact_path, registered_model_name):
+def run_experiment(experiment_name, file_key, artifact_path, registered_model_name):
 
     # Start timing
     start_time = time.time()
 
     # Load and preprocess data
-    df = load_data(filename)
+    df = load_data(file_key)
     X_train, X_test, y_train, y_test = preprocess_data(df)
 
     # Create pipeline
@@ -129,9 +127,9 @@ def run_experiment(experiment_name, filename, artifact_path, registered_model_na
 if __name__ == "__main__":
     # Define experiment parameters
     experiment_name = "test"
-    filename = filename
+    file_key = file_key
     artifact_path = "modeling_housing_market"
     registered_model_name = "linear_regression"
 
     # Run the experiment
-    run_experiment(experiment_name, filename, artifact_path, registered_model_name)
+    run_experiment(experiment_name, file_key, artifact_path, registered_model_name)

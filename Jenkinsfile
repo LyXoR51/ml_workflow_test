@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-    string(name: 'FILENAME', defaultValue: '', description: 'Nom du fichier CSV sur S3 (ex: train_dataset_20250801_132000.csv)')
+    string(name: 'FILE_KEY', defaultValue: '', description: 'key du fichier CSV sur S3 (ex: /dataset/train_dataset_20250801_132000.csv)')
     }
 
     stages {
@@ -32,7 +32,7 @@ pipeline {
                         writeFile file: 'env.list', text: """
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-FILENAME=${params.FILENAME}
+FILE_KEY=${params.FILE_KEY}
 """
                     }
 
