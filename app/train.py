@@ -18,13 +18,6 @@ file_key = os.environ.get('FILE_KEY')
 
 #file_key = 'housing_prices/train_dataset/train_dataset_20250730_205612.csv'
 
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--file_key', type=str, required=True)
-    return parser.parse_args()
-
-
 def load_data(file_key):
     bucket = 'fp-private-bucket'
 
@@ -108,10 +101,6 @@ def run_experiment(experiment_name, file_key, artifact_path, registered_model_na
     # Start timing
     start_time = time.time()
 
-
-
-
-
     # Load and preprocess data
     df = load_data(file_key)
     X_train, X_test, y_train, y_test = preprocess_data(df)
@@ -137,11 +126,9 @@ def run_experiment(experiment_name, file_key, artifact_path, registered_model_na
 
 # Entry point for the script
 if __name__ == "__main__":
-    args = parse_args()
-
     # Define experiment parameters
     experiment_name = "test"
-    file_key = args.file_key
+    file_key = file_key
     artifact_path = "modeling_housing_market"
     registered_model_name = "linear_regression"
 
