@@ -126,7 +126,11 @@ def run_experiment(experiment_name, file_key, artifact_path, registered_model_na
 
 # Entry point for the script
 if __name__ == "__main__":
-    file_key = os.getenv("FILE_KEY")
+    print("⚡ DEBUG: Environment variables dump")
+    for key, value in os.environ.items():
+        print(f"  {key}={value}")
+
+    file_key = os.getenv("FILE_KEY", "🏁 PAR DEFAUT")
     if not file_key:
         raise ValueError("❌ La variable d'environnement FILE_KEY est vide ou absente !")
 
