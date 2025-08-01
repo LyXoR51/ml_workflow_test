@@ -231,7 +231,7 @@ def log_metrics_and_model(model, X_train, y_train, X_test, y_test, artifact_path
     mlflow.sklearn.log_model(
         sk_model=model,
         artifact_path=artifact_path,
-        registered_model_name=registered_model_name
+        #registered_model_name=registered_model_name  #dont works with mlflow 3.1
     )
 
 
