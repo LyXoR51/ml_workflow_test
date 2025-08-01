@@ -7,11 +7,45 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LinearRegression 
 from sklearn.pipeline import Pipeline
+import os
+import boto3
+from io import BytesIO
+from botocore.exceptions import ClientError
 
+#bucket = os.environ.get('S3_BUCKET')
+#folder = os.environ.get('S3_FOLDER', 'datasets')
+#filename = os.environ.get('FILENAME')
+
+bucket = 'fp-private-bucket'
+folder = 'housing_prices/train_dataset'
+
+filename = 'train_dataset_20250730_205612.csv'
 # Load data
-def load_data(url):
+def load_data(filename):
+    bucket = 'fp-private-bucket'
+    folder = 'housing_prices/train_dataset'
+    key = f"{folder}/{filename}"  
 
-    return pd.read_csv(url,index_col=0)
+    print(f"🔍 Tentative de lecture de S3://{bucket}/{key}")
+
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+        region_name=os.environ.get('AWS_DEFAULT_REGION', 'eu-west-3')
+    )
+
+    try:
+        response = s3.get_object(Bucket=bucket, Key=key)
+        df = pd.read_csv(BytesIO(response['Body'].read()))
+        print(f"✅ Données chargées depuis S3, shape = {df.shape}")
+        return df
+    except ClientError as e:
+        print(f"❌ ClientError : {e.response['Error']['Code']} - {e.response['Error']['Message']}")
+        raise
+    except Exception as e:
+        print(f"❌ Erreur inattendue : {e}")
+        raise
 
 # Preprocess data
 def preprocess_data(df):
@@ -67,13 +101,13 @@ def log_metrics_and_model(model, X_train, y_train, X_test, y_test, artifact_path
     )
 
 # Main function to execute the workflow
-def run_experiment(experiment_name, data_url, artifact_path, registered_model_name):
+def run_experiment(experiment_name, filename, artifact_path, registered_model_name):
 
     # Start timing
     start_time = time.time()
 
     # Load and preprocess data
-    df = load_data(data_url)
+    df = load_data(filename)
     X_train, X_test, y_train, y_test = preprocess_data(df)
 
     # Create pipeline
@@ -99,9 +133,9 @@ def run_experiment(experiment_name, data_url, artifact_path, registered_model_na
 if __name__ == "__main__":
     # Define experiment parameters
     experiment_name = "test"
-    data_url = "https://fp-private-bucket.s3.eu-west-3.amazonaws.com/housing_prices/train_dataset/real_estate_dataset.csv"
+    filename = filename
     artifact_path = "modeling_housing_market"
     registered_model_name = "linear_regression"
 
     # Run the experiment
-    run_experiment(experiment_name, data_url, artifact_path, registered_model_name)
+    run_experiment(experiment_name, filename, artifact_path, registered_model_name)
