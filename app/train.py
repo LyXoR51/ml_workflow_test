@@ -15,8 +15,8 @@ from botocore.exceptions import ClientError
 
 file_key = os.environ.get('FILE_KEY')
 
-#filename = 'train_dataset_20250730_205612.csv'
-# Load data
+#file_key = 'housing_prices/train_dataset/train_dataset_20250730_205612.csv'
+
 def load_data(file_key):
     bucket = 'fp-private-bucket'
 
