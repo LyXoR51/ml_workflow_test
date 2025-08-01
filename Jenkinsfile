@@ -1,65 +1,11 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'FILENAME', defaultValue: '', description: 'Nom du fichier CSV à télécharger')
-    }
-
-    environment {
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')       // Jenkins credentials ID
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION = 'eu-west-3'                           // adapte ta région
-        S3_BUCKET = credentials('S3_BUCKET')
-        S3_FOLDER = 'housing_prices/train_dataset/'
-
-    }
-
     stages {
         stage('Checkout') {
             steps {
                 // Checkout the code from the repository
                 git branch: 'main', url: 'https://github.com/LyXoR51/ml_workflow_test.git'
-            }
-        }
-
-        stage('Download CSV from S3') {
-            steps {
-                script {
-                    if (!params.FILENAME) {
-                        error("Le paramètre FILENAME est obligatoire.")
-                    }
-
-                    withEnv(["FILENAME=${params.FILENAME}"]) {
-                        sh '''
-                            python3 -c "
-import os
-import boto3
-import botocore
-
-aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
-aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
-region_name = os.environ['AWS_DEFAULT_REGION']
-bucket = os.environ['S3_BUCKET']
-folder = os.environ['S3_FOLDER']
-filename = os.environ['FILENAME']
-
-s3 = boto3.client('s3',
-    aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key,
-    region_name=region_name)
-
-key = folder + filename
-
-try:
-    s3.download_file(bucket, key, filename)
-    print(f'Fichier téléchargé : {filename}')
-except botocore.exceptions.ClientError as e:
-    print(f'Erreur lors du téléchargement : {e}')
-    exit(1)
-"
-                        '''
-                    }
-                }
             }
         }
 
