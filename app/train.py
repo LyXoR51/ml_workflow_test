@@ -18,7 +18,7 @@ import argparse
 
 #file_key = 'housing_prices/train_dataset/train_dataset_20250730_205612.csv'
 
-def load_data(file_key):
+def load_data(file_key: str):
     bucket = 'fp-private-bucket'
 
     print(f"🔍 Tentative de lecture de S3://{bucket}/{file_key}")
@@ -126,7 +126,12 @@ def run_experiment(experiment_name, file_key, artifact_path, registered_model_na
 
 # Entry point for the script
 if __name__ == "__main__":
-    file_key = os.environ.get('FILE_KEY')
+    file_key = os.getenv("FILE_KEY")
+    if not file_key:
+        raise ValueError("❌ La variable d'environnement FILE_KEY est vide ou absente !")
+
+    print(f"✅ FILE_KEY is: {file_key}")
+
     experiment_name = "test"
     artifact_path = "modeling_housing_market"
     registered_model_name = "linear_regression"
