@@ -21,20 +21,14 @@ pipeline {
         stage('Run Tests Inside Docker Container') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'MLFLOW_TRACKING_URI', variable: 'MLFLOW_TRACKING_URI'),
                     string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY'),
-                    string(credentialsId: 'BACKEND_STORE_URI', variable: 'BACKEND_STORE_URI'),
-                    string(credentialsId: 'ARTIFACT_ROOT', variable: 'ARTIFACT_ROOT')
-                ]) {
+                    ]) {
                     script {
                         // Write environment variables to a temporary file
                         writeFile file: 'env.list', text: """
-MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-BACKEND_STORE_URI=$BACKEND_STORE_URI
-ARTIFACT_ROOT=$ARTIFACT_ROOT
 """
                     }
 
