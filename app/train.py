@@ -14,7 +14,7 @@ from botocore.exceptions import ClientError
 import argparse
 
 
-file_key = os.environ.get('FILE_KEY')
+
 
 #file_key = 'housing_prices/train_dataset/train_dataset_20250730_205612.csv'
 
@@ -126,9 +126,8 @@ def run_experiment(experiment_name, file_key, artifact_path, registered_model_na
 
 # Entry point for the script
 if __name__ == "__main__":
-    # Define experiment parameters
+    file_key = os.environ.get('FILE_KEY')
     experiment_name = "test"
-    file_key = file_key
     artifact_path = "modeling_housing_market"
     registered_model_name = "linear_regression"
 
