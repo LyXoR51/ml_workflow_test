@@ -12,14 +12,10 @@ import boto3
 from io import BytesIO
 from botocore.exceptions import ClientError
 
-#bucket = os.environ.get('S3_BUCKET')
-#folder = os.environ.get('S3_FOLDER', 'datasets')
-#filename = os.environ.get('FILENAME')
 
-bucket = 'fp-private-bucket'
-folder = 'housing_prices/train_dataset'
+filename = os.environ.get('FILENAME')
 
-filename = 'train_dataset_20250730_205612.csv'
+#filename = 'train_dataset_20250730_205612.csv'
 # Load data
 def load_data(filename):
     bucket = 'fp-private-bucket'
