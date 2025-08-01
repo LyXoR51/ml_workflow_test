@@ -53,6 +53,7 @@ bash -c "pytest --maxfail=1 --disable-warnings"
         always {
             // Clean up workspace and remove dangling Docker images
             sh 'docker system prune -f'
+            sh 'rm -f env.list'
         }
         success {
             echo 'Pipeline completed successfully!'
