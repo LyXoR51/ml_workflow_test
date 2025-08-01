@@ -29,13 +29,13 @@ pipeline {
                 ]) {
                     script {
                         // Write environment variables to a temporary file
-                        writeFile file: 'env.list', text: '''
+                        writeFile file: 'env.list', text: """
 MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 BACKEND_STORE_URI=$BACKEND_STORE_URI
 ARTIFACT_ROOT=$ARTIFACT_ROOT
-'''
+"""
                     }
 
                     // Run a temporary Docker container and pass env variables securely via --env-file
