@@ -2,7 +2,6 @@ name: ml_workflow_test
 
 docker_env:
   image: lyxor/housing_ml
-  build_context: .
 
 entry_points:
   main:
@@ -12,3 +11,4 @@ entry_points:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - FILE_KEY
+    command: "python app/train.py"
